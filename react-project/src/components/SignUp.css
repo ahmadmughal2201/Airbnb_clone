@@ -1,0 +1,74 @@
+.open-dialog-button {
+    background-color: #ff5a60;
+    color: white;
+    /* Add other styles as needed */
+  }
+
+.dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  color: orangered;
+  padding: 75px;
+  border: 2px solid black;
+  box-shadow: 0 0 10px rgba(15, 14, 14, 0.2);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.textBoxBorder{
+    border: 1px solid #aca3a3;
+    padding: 2px;
+    margin: 2px;
+}
+
+.button {
+  /* Add your button styling here */
+  background-color: #ff5a60;
+    color: white;
+    padding: 10px;
+}
+
+.combo-box {
+  position: relative;
+}
+
+.combo-box .combo-box-header {
+  display: flex;
+  align-items: center;
+}
+
+.combo-box .combo-box-arrow {
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.combo-box input {
+  width: 100%;
+  padding: 5px;
+}
+
+.combo-box .combo-box-options {
+  position: absolute;
+  width: 100%;
+  background-color: white;
+  border: 1px solid #ccc;
+  max-height: 100px;
+  overflow-y: auto;
+  display: none;
+}
+
+.combo-box .combo-box-options li {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.combo-box.active .combo-box-options {
+  display: block;
+}
+

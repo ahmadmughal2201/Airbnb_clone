@@ -21,7 +21,7 @@ const Filters = () => {
   ];
   return (
     <div className="   ">
-      <div className="flex justify-center  gap-4 sm:gap-4  mt-5 mb-5  ">
+      <div className="flex justify-center  gap-4 sm:gap-4  mt-2 mb-2  ">
         {sorting.map((obj) => (
           <Filter title={obj.title} icon={obj.icon} />
         ))}

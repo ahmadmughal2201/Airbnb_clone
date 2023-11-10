@@ -1,0 +1,11 @@
+.textBoxBorder{
+    border: 1px solid #aca3a3;
+    padding: 2px;
+    margin: 2px;
+}
+
+.column-container {
+    display: flex;
+    flex-direction: column;
+  }
+  

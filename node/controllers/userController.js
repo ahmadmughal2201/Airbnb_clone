@@ -1,10 +1,48 @@
 const user = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 
-async function signUp(req, res) {
+/*async function signUp(req, res) {
     try {
         console.log(req.body);
         const newUser = await user.create(req.body); // Product here is the schema
+        res.status(201).json(newUser);
+    } catch (error) {
+        res.status(500).json({ apierror: error });
+    }
+}
+
+async function signUp(req, res) {
+    try {
+        console.log(req.body);
+        // Check if a user with the provided email already exists
+        const existingUser = await user.findOne({ email: req.body.email });
+
+        if (existingUser) {
+            // Email is already registered, return an error response
+            return res.status(400).json({ error: "Email is already registered" });
+        }
+
+        // If the email is not registered, create a new user
+        const newUser = await user.create(req.body); // Assuming "user" is the schema
+        res.status(201).json(newUser);
+    } catch (error) {
+        res.status(500).json({ apierror: error });
+    }
+}*/
+
+async function signUp(req, res) {
+    try {
+        console.log(req.body);
+        // Check if a user with the provided email already exists
+        const existingUser = await user.findOne({ email: req.body.email });
+
+        if (existingUser) {
+            // Email is already registered, return an error response
+            return res.status(400).json({ error: "Email is already registered" });
+        }
+
+        // If the email is not registered, create a new user
+        const newUser = await user.create(req.body); // Assuming "user" is the schema
         res.status(201).json(newUser);
     } catch (error) {
         res.status(500).json({ apierror: error });
@@ -21,6 +59,7 @@ async function logIn(req, res) {
 
         return res.status(200).json({
             message: 'Logged in successfull',
+            id: u._id,
             email: email,
             firstName: u.firstName,
             role: u.role,
@@ -30,6 +69,16 @@ async function logIn(req, res) {
 
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+async function getUserIdByEmail(email) {
+    try {
+      const User = await user.findOne({ email });
+      return User ? User._id : null;
+    } catch (error) {
+      console.error('Error while fetching user ID:', error);
+      throw error;
     }
 };
 

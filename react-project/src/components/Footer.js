@@ -20,8 +20,6 @@ const Footer = () => {
     <FaMountainCity />,
     <BiSolidShocked />,
     <FaUmbrellaBeach />,
-
-
   ];
   return (
     <div className="bg-white border-t-2 shadow-md  shadow-gray-300 sticky bottom-0 h-10 w-full flex items-center justify-center gap-6">
