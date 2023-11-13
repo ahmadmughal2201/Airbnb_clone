@@ -5,6 +5,10 @@ const bodyparser = require("body-parser");
 require('./utils/db');
 const productRouter = require('./routes/userRoutes');
 
+const cors = require('cors');
+
+app.use(cors());
+
 // Middleware
 app.use(bodyparser.json());
 

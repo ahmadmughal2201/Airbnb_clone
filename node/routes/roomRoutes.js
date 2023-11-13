@@ -1,12 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const userController = require('../controllers/userController');
-const validateToken = require("../utils/auth_middlewares");
-const requireRoles = require("../utils/role_auth");
-
-
-const roomController = require('../controllers/roomController');
+//const roomController = require('../controllers/roomController');
 const multer = require('multer');
+app.use(express.json());
+const cors = require("cors");
+app.use(cors());
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb){
@@ -21,9 +19,21 @@ const storage = multer.diskStorage({
 const upload = multer({storage: storage});
 const roomModel = require('../models/roomModel');
 
-router.post("/roomAdd", userController.addRoom);
+router.post("/room", upload.single("image"), async (req, res) => {
+    console.log(req.body);
+    const imageName = req.file.filename;
 
-router.get("/get-image", async (req, res) => {
+    
+  
+    try {
+      await Images.create({ image: imageName });
+      res.json({ status: "ok" });
+    } catch (error) {
+      res.json({ status: error });
+    }
+  });
+
+  router.get("/get-image", async (req, res) => {
     try {
       Images.find({}).then((data) => {
         res.send({ status: "ok", data: data });
@@ -31,7 +41,7 @@ router.get("/get-image", async (req, res) => {
     } catch (error) {
       res.json({ status: error });
     }
-});
+  });
 
 /*router.post('/upload-room',upload.single("upload"), async(req, res) => {
     console.log("hello");
@@ -102,17 +112,3 @@ router.post('/upload-Room', upload.single("upload"), async (req, res) => {
 });
 
 module.exports = router;*/
-
-
-
-router.post('/signUp', userController.signUp);
-router.post('/logIn', userController.logIn);
-//router.get('/idGet', userController.getUserIdByEmail());
-//router.get('/userData', userController.allUsers);
-//router.put('/updateUser/:id', userController.updateUser);
-//router.delete('/deleteUser/:id', userController.deleteUser);
-//router.get('/dashBoard', validateToken, requireRoles(['User']), userController.welcome);
-
-
-
-module.exports = router;
