@@ -9,11 +9,11 @@ const AddRoom = () => {
     country: '',
     rent: '',
     location: '',
-    img: '',
+    img: null,
     des: '',
     type: '',
-    history: null,
-    rating: null,
+    history: 's',
+    rating: '0',
     trending: false,
     sleep: false,
     views: false,
@@ -24,10 +24,10 @@ const AddRoom = () => {
     tropical: false,
   });
 
+  const [fileData, setFileData] = useState({ img: '' });
 
 
-
-  const [image, setImage] = useState(null);
+  const [img, setImage] = useState();
   const [allImage, setAllImage] = useState(null);
 
   useEffect(() => {
@@ -36,27 +36,28 @@ const AddRoom = () => {
 
 
   const submitImage = async (e) => {
-    console.log("In Submit");
     e.preventDefault();
-    console.log(image);
-    formData.img = null;
-
-    try{
-      const result = await axios.post("http://localhost:3000/api/roomAdd",formData);
-      console.log(result);
+    try {
+      const fd = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        // Append each property to FormData
+        fd.append(key, value);
+      });
+      console.log(fd.data);
+      console.log("Before Axios request");
+      const result = await axios.post("http://localhost:3000/api/upload-image", fd);
+      console.log("After Axios request");
+      console.log("Server response:", result.data);
+    } catch (error) {
+      console.error("Error in Axios request:", error);
+    if (error.response) {
+      console.error("Response data:", error.response.data);
+      console.error("Response status:", error.response.status);
+    } else if (error.request) {
+      console.error("No response received:", error.request);
+    } else {
+      console.error("Error setting up the request:", error.message);
     }
-    catch(error){
-      if (error.response) {
-        // The request was made, and the server responded with a status code that falls outside the range of 2xx
-        console.log(error.response.data);
-        console.log(error.response.status);
-      } else if (error.request) {
-        // The request was made, but no response was received
-        console.log(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an error
-        console.log('Error', error.message);
-      }
     }
   };
 
@@ -74,7 +75,15 @@ const AddRoom = () => {
   };
 
   const onInputChange = (e) => {
-    console.log(e.target.files[0]);
+    const { name, value, type, checked, files } = e.target;
+
+    const inputValue = type === 'file' ? files[0] : type === 'checkbox' ? checked : value;
+
+    setFormData({
+      ...formData,
+      [name]: inputValue,
+    });
+  // Store the selected image in the image state if needed
     setImage(e.target.files[0]);
   };
 
@@ -83,7 +92,14 @@ const AddRoom = () => {
 
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked, files } = e.target;
+
+    const inputValue = type === 'file' ? files[0] : type === 'checkbox' ? checked : value;
+
+    setFormData({
+      ...formData,
+      [name]: inputValue,
+    });
   };
 
   const handleSubmit = async (e) =>  {
@@ -130,34 +146,30 @@ const AddRoom = () => {
   return (
     <div  className='Add' >
       <form onSubmit={submitImage} className='formStyle'>
-      <DropZone onDrop={(acceptedFiles) => console.log(acceptedFiles)}>
-  {({ getRootProps, getInputProps }) => (
-    <div
-      style={{
-        padding: '10px',
-        width: '150px',
-        height: '150px',
-        border: '2px dashed grey',
-        borderRadius: '5px',
-        display: 'flex',
-        cursor: 'pointer',
-        margin: 'auto',
-      }}
-      {...getRootProps()}
-    >
-      <input
-        {...getInputProps()}
-        accept="image/*"
-        style={{ display: 'block' }} // Change display to 'block' to make it visible
-        tabindex="0" // Set tabindex to '0' to make it focusable
-        name="img"
-        onChange={onInputChange}
-        className="hidden-input" 
-      />
-      <p>Drop your picture here</p>
-    </div>
-  )}
-</DropZone>
+<div className="mb-3">
+                <label className="btn btn-outline-secondary col-md-12">
+                  {img ? img.name : "Upload Photo"}
+                  <input
+                    type="file"
+                    name="img"
+                    accept="image/*"
+                    onChange={onInputChange}
+                    hidden
+                  />
+                </label>
+              </div>
+<div>
+                {img && (
+                  <div className="text-center">
+                    <img
+                      src={URL.createObjectURL(img)}
+                      alt="product_photo"
+                      height={"200px"}
+                      className="img img-responsive"
+                    />
+                  </div>
+                )}
+              </div>
 
 <div class="vertical-gap"></div>
         <input

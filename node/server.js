@@ -3,7 +3,9 @@ const app = express();
 const PORT = 3001;
 const bodyparser = require("body-parser");
 require('./utils/db');
-const productRouter = require('./routes/userRoutes');
+const userRouter = require('./routes/userRoutes');
+const roomRouter = require('./routes/roomRoutes');
+
 
 const cors = require('cors');
 
@@ -13,7 +15,9 @@ app.use(cors());
 app.use(bodyparser.json());
 
 // Starter routes
-app.use('/api', productRouter);
+app.use('/api', userRouter);
+app.use('/api', roomRouter);
+
 
 
 app.get('/welcome', (req, res) => {

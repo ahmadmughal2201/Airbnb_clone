@@ -36,6 +36,23 @@ async function addRoom (req, res){
     }
 }
 
+async function getUserIdByEmailAndPassword(req,res) {
+    const {email, password} = req.body;
+    try {
+        console.log("In Find")
+      // Assuming you have a 'users' collection/model
+      const u = await user.findOne({ email, password });
+  
+      
+      return u ? u._id : null;
+      // Return the user ID
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      throw error; // Handle or log the error as needed
+    }
+
+}
+
 /*async function signUp(req, res) {
     try {
         console.log(req.body);
@@ -78,7 +95,13 @@ async function signUp(req, res) {
 
         // If the email is not registered, create a new user
         const newUser = await user.create(req.body); // Assuming "user" is the schema
-        res.status(201).json(newUser);
+        return res.status(200).json({
+            message: 'Signed Up successfully',
+            id: newUser._id,
+            email: email,
+            firstName: newUser.firstName,
+            role: newUser.role,
+        });
     } catch (error) {
         res.status(500).json({ apierror: error });
     }
@@ -219,5 +242,6 @@ module.exports = {
     updateUser,
     deleteUser,
     welcome,
-    addRoom
+    addRoom,
+    getUserIdByEmailAndPassword
 }

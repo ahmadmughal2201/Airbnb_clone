@@ -1,47 +1,25 @@
 const express = require("express");
-const router = express.Router();
-//const roomController = require('../controllers/roomController');
-const multer = require('multer');
-app.use(express.json());
-const cors = require("cors");
-app.use(cors());
+const formidable = require("express-formidable");
+const app = express.Router();
+const roomController = require('../controllers/roomController');
 
-const storage = multer.diskStorage({
-    destination: function(req, file, cb){
-        cb(null, "./uploads");
-    },
-    filename: function(req, file, cb){
-        const uniqueSuffix = Date.now();
-        cb(null, uniqueSuffix + file.originalname);
-    },
-})
 
-const upload = multer({storage: storage});
+
 const roomModel = require('../models/roomModel');
 
-router.post("/room", upload.single("image"), async (req, res) => {
-    console.log(req.body);
-    const imageName = req.file.filename;
 
-    
-  
-    try {
-      await Images.create({ image: imageName });
-      res.json({ status: "ok" });
-    } catch (error) {
-      res.json({ status: error });
-    }
-  });
+app.get("/get-image", roomController.getImage);
 
-  router.get("/get-image", async (req, res) => {
-    try {
-      Images.find({}).then((data) => {
-        res.send({ status: "ok", data: data });
-      });
-    } catch (error) {
-      res.json({ status: error });
-    }
-  });
+app.post("/upload-image", formidable(), roomController.upload);
+
+app.get("/get-rooms", roomController.getRooms);
+
+app.get("/get-roomImage/:id", roomController.getPhoto);
+
+
+module.exports = app;
+
+
 
 /*router.post('/upload-room',upload.single("upload"), async(req, res) => {
     console.log("hello");
@@ -58,19 +36,6 @@ router.post("/room", upload.single("image"), async (req, res) => {
 
 
 
-async function uploadRoom(req, res) {
-    try {
-        console.log(req.body);
-        const newRoom = await roomModel.create(req.body); // Product here is the schema
-        res.status(201).json(newRoom);
-    } catch (error) {
-        res.status(500).json({ apierror: error });
-    }
-}
-
-module.exports = {
-    uploadRoom
-}
 
 
 /*
@@ -112,3 +77,4 @@ router.post('/upload-Room', upload.single("upload"), async (req, res) => {
 });
 
 module.exports = router;*/
+

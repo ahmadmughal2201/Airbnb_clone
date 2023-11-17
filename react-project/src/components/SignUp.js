@@ -73,6 +73,8 @@ function SignUp() {
     try {
       const r = await axios.post('http://localhost:3000/api/logIn', formData);
       console.log('User Logged In:', r.data);
+      console.log("Id", r.data.id);
+      setManagerId(r.data.id);
       setLogIn(true);
       handleShowMessage(true);
       handleVariable();
@@ -84,6 +86,7 @@ function SignUp() {
         <MessageBox message={rolee} onClose={handleCloseMessage} />
       )}
       console.log("Role is: ", myVariable);
+      
       // Skip the signup part if login is successful
       return;
     } catch (err) {
@@ -95,6 +98,7 @@ function SignUp() {
       try {
         const response = await axios.post('http://localhost:3000/api/signUp', formData);
         console.log('User registered:', response.data);
+        setManagerId(response.data.id);
         handleShowMessage(true);
         {showMessageBox && (
           <MessageBox message="User Registered!" onClose={handleCloseMessage} />

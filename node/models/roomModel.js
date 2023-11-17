@@ -4,8 +4,11 @@ const roomSchema = mongoose.Schema({
     city: String,
     country: String,
     rent: Number,
-    loacation: String,
-    img: String,
+    location: String,
+    img: {
+      data: Buffer,
+      contentType: String,
+    },
     des: String,
     type: String,
     history: String,
