@@ -190,8 +190,28 @@ async function updateUser(req, res) {
         const updateU = await user.findByIdAndUpdate(id, req.body, { new: true });
         res.json(updateU);
     }
-    catch (err) {
-        res.status(500).json({ error: err.message });
+    catch (error) {
+        console.error("Error in update api:", error);
+        if (error.response) {
+          console.error("Response data:", error.response.data);
+          console.error("Response status:", error.response.status);
+        } else if (error.request) {
+          console.error("No response received:", error.request);
+        } else {
+          console.error("Error setting up the request:", error.message);
+        }
+          toast.error("Someething Went Wrong");
+    }
+}
+
+async function updateCard(req, res){
+    try{
+        const{ id } = req.params;
+        const updateP = await Product.findByIdAndUpdate(id, req.body, {new: true});
+        res.json(updateP); 
+    }
+    catch(err){
+        res.status(500).json({error: err.message});
     }
 }
 

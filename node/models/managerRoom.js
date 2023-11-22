@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const managerRoomSchema = mongoose.Schema({
     MID: String,
-    RId: String,
-    Status: String,
+    RID: String,
+    Status: Boolean,
 }, {timestamps: true});
 
 

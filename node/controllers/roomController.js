@@ -72,12 +72,37 @@ async function upload(req, res) {
     await newRoom.save();
 
     console.log("executed");
-    return res.status(201).json(newRoom);
+    return res.status(200).json({
+      message: 'Added room successfully',
+      id: newRoom._id,
+      city: newRoom.city,
+  });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ apierror: error.message });
   }
 }
+
+async function singleRoom(req, res){
+    try {
+      const newRoom = await roomModel
+        .findOne({ id: req.params._id })
+        .select("-photo");
+      res.status(200).send({
+        success: true,
+        message: "Single Room Fetched",
+        newRoom,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        success: false,
+        message: "Eror while getitng single room",
+        error,
+      });
+    }
+  };
+  
 
 async function getRooms(req,res){
   try {
@@ -190,11 +215,34 @@ async function addRoom (req, res){
   });
 }
 
+async function searchRoom(req, res){
+  try {
+    const { keyword } = req.params;
+    const resutls = await roomModel
+      .find({
+        $or: [
+          { city: { $regex: keyword, $options: "i" } },
+          { des: { $regex: keyword, $options: "i" } },
+        ],
+      })
+      .select("-photo");
+    res.json(resutls);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({
+      success: false,
+      message: "Error In Search Product API",
+      error,
+    });
+  }
+};
 
 module.exports = {
     getImage,
     addRoom,
     upload,
     getRooms,
+    singleRoom,
+    searchRoom,
     getPhoto
 }

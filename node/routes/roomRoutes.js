@@ -16,6 +16,8 @@ app.get("/get-rooms", roomController.getRooms);
 
 app.get("/get-roomImage/:id", roomController.getPhoto);
 
+app.get("/get-single-room/:id" , roomController.singleRoom);
+
 
 module.exports = app;
 

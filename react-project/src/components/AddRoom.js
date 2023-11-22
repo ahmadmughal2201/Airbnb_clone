@@ -2,8 +2,16 @@ import React, { useEffect, useState } from 'react';
 import DropZone from 'react-dropzone';
 import './AddRoom.css';
 import axios from 'axios';
+import { useMyContext } from './MyContext';
+import { useNavigate } from "react-router-dom";
 
 const AddRoom = () => {
+  const navigate = useNavigate();
+  const [mandata, setmanData] = useState({
+    MID: '',
+    RID: '',
+    status: true,
+  })
   const [formData, setFormData] = useState({
     city: '',
     country: '',
@@ -26,7 +34,7 @@ const AddRoom = () => {
 
   const [fileData, setFileData] = useState({ img: '' });
 
-
+  const { managerId, setManagerId, roomId, setRoomId} = useMyContext();
   const [img, setImage] = useState();
   const [allImage, setAllImage] = useState(null);
 
@@ -47,7 +55,28 @@ const AddRoom = () => {
       console.log("Before Axios request");
       const result = await axios.post("http://localhost:3000/api/upload-image", fd);
       console.log("After Axios request");
+      setRoomId(result.data.id);
+      console.log("Room Id: ", roomId);
       console.log("Server response:", result.data);
+      try{
+        console.log("Before Axios request 2");
+        mandata.MID = managerId;
+        mandata.RID = result.data.id;
+        console.log("Result Data Id: ", result.data.id);
+        const res = await axios.post("http://localhost:3000/api/add-manager-room",mandata)
+        console.log("After Axios request 2");
+        console.log("Manager room response:", res.data);
+      }catch (error) {
+        console.error("Error in Axios request 2:", error);
+      if (error.response) {
+        console.error("Response data 2:", error.response.data);
+        console.error("Response status 2:", error.response.status);
+      } else if (error.request) {
+        console.error("No response received 2:", error.request);
+      } else {
+        console.error("Error setting up the request 2:", error.message);
+      }
+      }
     } catch (error) {
       console.error("Error in Axios request:", error);
     if (error.response) {
@@ -59,6 +88,8 @@ const AddRoom = () => {
       console.error("Error setting up the request:", error.message);
     }
     }
+    
+    navigate("/manager");
   };
 
   const getImage = async () => {

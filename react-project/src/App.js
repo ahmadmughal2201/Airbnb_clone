@@ -2,15 +2,18 @@ import React from 'react';
 import { MyProvider, useMyContext } from './components/MyContext';
 import Navbar from './components/Navbar';
 import Manager from './components/Manager';
+import SignUp from './components/SignUp';
 import Filters from './components/Filters';
 import Footer from './components/Footer';
 import AddRoom from './components/AddRoom';
 import Empty from './components/Empty';
+import Wallet from './components/Wallet';
+import Customer from './components/Customer';
+import RoomInfo from './components/RoomInfo';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function AppContent() {
   const { myVariable } = useMyContext();
-
   return (
     <div className="">
       <Router>
@@ -25,14 +28,17 @@ function AppContent() {
 
         {/* Footer */}
         <Footer />
-        {myVariable === 'Manager' && <Manager />}
 
 
         {/*userRole === 'customer' && <CustomerPage />*/}
         <Routes>
-
           <Route exact path="/" element={<Empty />}  />
-          <Route path="/add-room" element={<AddRoom />} /> {/* Add the route for AddRoom */}
+          <Route path="/add-room" element={<AddRoom />} />
+          <Route path = "/signup" element={<SignUp/>}/>
+          <Route path= "/manager" element={<Manager/>} />
+          <Route path= "/customer" element={<Customer/>} />
+          <Route path= "/wallet" element={<Wallet/>} />
+          <Route path="/api/get-single-room/:id" element={<RoomInfo/>} />
         </Routes>
 
         {/* Filters */}

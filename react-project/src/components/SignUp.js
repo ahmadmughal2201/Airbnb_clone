@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './SignUp.css';
 import { useMyContext } from './MyContext';
+import { useNavigate } from "react-router-dom";
 
 
 function SignUp() {
+  const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(true);
   const [logIn, setLogIn] = useState(false);
@@ -17,7 +19,7 @@ function SignUp() {
     Status: true,
   });
 
-  const { myVariable, setMyVariable , managerId, setManagerId} = useMyContext();
+  const { myVariable, setMyVariable , managerId, setManagerId, customerId, setCustomerId} = useMyContext();
 
   const handleVariable = () => {
     // Set the variable in the context
@@ -73,8 +75,10 @@ function SignUp() {
     try {
       const r = await axios.post('http://localhost:3000/api/logIn', formData);
       console.log('User Logged In:', r.data);
-      console.log("Id", r.data.id);
       setManagerId(r.data.id);
+      console.log("Manager Id", managerId);
+      setCustomerId(r.data.id);
+      console.log("Customer Id", customerId);
       setLogIn(true);
       handleShowMessage(true);
       handleVariable();
@@ -86,11 +90,24 @@ function SignUp() {
         <MessageBox message={rolee} onClose={handleCloseMessage} />
       )}
       console.log("Role is: ", myVariable);
-      
+      if(formData.role === "Manager"){
+        navigate("/manager");
+      }
+      if(formData.role === "Customer"){
+        navigate("/customer");
+      }
       // Skip the signup part if login is successful
       return;
-    } catch (err) {
-      console.error('User can`t be logged in:', err);
+    } catch (error) {
+      console.error("Error in Axios request:", error);
+      if (error.response) {
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+      } else {
+        console.error("Error setting up the request:", error.message);
+      }
     }
   
     // Proceed with signup only if login was not successful
@@ -99,6 +116,8 @@ function SignUp() {
         const response = await axios.post('http://localhost:3000/api/signUp', formData);
         console.log('User registered:', response.data);
         setManagerId(response.data.id);
+        setCustomerId(response.data.id);
+        console.log("Customer Id", customerId);
         handleShowMessage(true);
         {showMessageBox && (
           <MessageBox message="User Registered!" onClose={handleCloseMessage} />
@@ -112,9 +131,23 @@ function SignUp() {
         console.log(myVariable);
         // You can handle success, show a message to the user, or redirect to a login page, etc.
       } catch (erro) {
-        console.error('Registration failed:', erro);
+        console.error("Error in Axios request:", error);
+        if (error.response) {
+          console.error("Response data:", error.response.data);
+          console.error("Response status:", error.response.status);
+        } else if (error.request) {
+          console.error("No response received:", error.request);
+        } else {
+          console.error("Error setting up the request:", error.message);
+        }
         // Handle the error, show an error message to the user, etc.
       }
+    }
+    if(formData.role === "Manager"){
+      navigate("/manager");
+    }
+    if(formData.role === "Customer"){
+      navigate("/customer");
     }
   };
   

@@ -5,15 +5,16 @@ import { FiSearch } from "react-icons/fi";
 import SignUp from './SignUp';
 import { useMyContext } from './MyContext';
 import { RxAvatar } from 'react-icons/rx';
+import { useNavigate } from 'react-router-dom';
 import { BrowserRouter as Link } from 'react-router-dom';
 
 const Navbar = () => {
 
   const { myVariable } = useMyContext();
   const [isSignUpVisible, setIsSignUpVisible] = useState();
-
+  const navigate = useNavigate();
   const openDialog = () => {
-    setIsSignUpVisible(true);
+    navigate("/signup");
   };
 
   const closeDialog = () => {
