@@ -10,6 +10,7 @@ import Empty from './components/Empty';
 import Wallet from './components/Wallet';
 import Customer from './components/Customer';
 import RoomInfo from './components/RoomInfo';
+import Rating from './components/Rating';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function AppContent() {
@@ -38,6 +39,7 @@ function AppContent() {
           <Route path= "/manager" element={<Manager/>} />
           <Route path= "/customer" element={<Customer/>} />
           <Route path= "/wallet" element={<Wallet/>} />
+          <Route path= "/rating" element={<Rating/>} />
           <Route path="/api/get-single-room/:id" element={<RoomInfo/>} />
         </Routes>
 

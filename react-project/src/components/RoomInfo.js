@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Layout from "./Layout";
 import toast from "react-hot-toast";
+import { useMyContext } from './MyContext';
+import { BiSolidAddToQueue } from 'react-icons/bi';
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 
 const RoomInfo = () => {
+  const navigate = useNavigate();
   /*const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
@@ -16,6 +19,7 @@ const RoomInfo = () => {
   const [photo, setPhoto] = useState("");*/
   const [id, setId] = useState("");
   const [city, setCity] = useState("");
+  const [flag, setFlag] = useState(false);
   const [country, setCountry] = useState("");
   const [des, setDes] = useState("");
   const [rent, setRent] = useState("");
@@ -25,6 +29,9 @@ const RoomInfo = () => {
   const [date, setDate] = useState("");
   const [date2, setDate2] = useState("");
   const params = useParams();
+
+  const {money, setMoney, customerId, setCustomerId, roomId, setRoomId} = useMyContext();
+
 
 
   //get single product
@@ -51,11 +58,77 @@ const RoomInfo = () => {
         setLocation(data.newRoom.location);
         setType(data.newRoom.type);
         setId(params.id);
+        setRoomId(params.id);
 
     } catch (error) {
       console.log(error);
     }
   };
+
+  const handleClick = async(e) => {
+    e.preventDefault();
+    navigate('/rating');
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = {
+      CID: '',
+      Status: true,
+      Wallet: '',
+    }
+    const fData = {
+      CID: '',
+      RID: '',
+      RentedDate: '',
+      CheckedInDate: null,
+      DueDate: '',
+      CheckedOutDate: null,
+      Rent: '',
+      Status: true,
+    }
+
+    formData.CID = customerId;
+    formData.Wallet = money;
+
+    fData.CID = customerId;
+    fData.RID = id;
+    fData.RentedDate = date;
+    fData.DueDate = date2;
+    fData.Rent = rent;
+
+  
+    try {
+      const r = await axios.post('http://localhost:3000/api/addGuest', formData);
+      console.log("Add Guest: ", r.data);
+      try {
+        const res = await axios.post('http://localhost:3000/api/addRented', fData);
+        console.log("Add Rented: ", res.data);
+        setFlag(false);
+      } catch (error) {
+        console.error("Error in Axios request 2:", error);
+        if (error.response) {
+          console.error("Response data 2:", error.response.data);
+          console.error("Response status 2:", error.response.status);
+        } else if (error.request) {
+          console.error("No response received 2:", error.request);
+        } else {
+          console.error("Error setting up the request 2:", error.message);
+        }
+      }
+    } catch (error) {
+      console.error("Error in Axios request:", error);
+      if (error.response) {
+        console.error("Response data:", error.response.data);
+        console.error("Response status:", error.response.status);
+      } else if (error.request) {
+        console.error("No response received:", error.request);
+      } else {
+        console.error("Error setting up the request:", error.message);
+      }
+    }  
+  }
+
   useEffect(() => {
     getSingleProduct();
     //eslint-disable-next-line
@@ -181,8 +254,38 @@ const RoomInfo = () => {
             onChange={handleChange2}
             className="textBoxBorder"
           />
+          <br/><br/>
+          <button className="button ml-30 flex items-center border px-2 py-2 rounded-full bg-[#ff5a60] text-white font-bold shadow-lg shadow-gray-300 hover:bg-[#f9787c] duration-100 ease-out" type="submit" onClick={handleSubmit}>Rent Room</button>
       </div>
-      <div>  
+      <div> 
+      <div
+      style={{
+        position: 'fixed',
+        bottom: '30px',
+        right: '30px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '60px',
+        height: '60px',
+        backgroundColor: '#ff5a60',
+        color: 'white',
+        borderRadius: '50%',
+        boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)',
+        cursor: 'pointer',
+        transition: 'background-color 0.1s ease-out',
+      }} onClick={handleClick}
+    >
+      <div
+        style={{
+          fontSize: '35px',
+          color: 'white',
+          transition: 'color 0.1s',
+        }}
+      >
+        <BiSolidAddToQueue />
+      </div>
+    </div> 
       </div>
     </div>
   );  

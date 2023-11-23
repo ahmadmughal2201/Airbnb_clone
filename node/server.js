@@ -6,6 +6,9 @@ require('./utils/db');
 const userRouter = require('./routes/userRoutes');
 const roomRouter = require('./routes/roomRoutes');
 const managerRoom = require('./routes/managerRoomRoutes');
+const rented = require('./routes/rentedRoutes');
+const payingGuest = require('./routes/payingGuestRoutes')
+const rating = require('./routes/ratingRoutes');
 
 const cors = require('cors');
 
@@ -18,6 +21,9 @@ app.use(bodyparser.json());
 app.use('/api', userRouter);
 app.use('/api', roomRouter);
 app.use('/api', managerRoom);
+app.use('/api', payingGuest);
+app.use('/api', rented);
+app.use('/api', rating);
 
 
 app.get('/welcome', (req, res) => {

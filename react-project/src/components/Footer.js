@@ -7,9 +7,6 @@ import {FaMountainCity} from "react-icons/fa6";
 import {BiSolidShocked} from "react-icons/bi";
 import {FaUmbrellaBeach} from "react-icons/fa";
 
-
-
-
 const Footer = () => {
   const icons = [
     <FaFireAlt />,
