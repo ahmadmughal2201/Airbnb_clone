@@ -4,6 +4,8 @@ import './AddRoom.css';
 import axios from 'axios';
 import { useMyContext } from './MyContext';
 import { useNavigate } from "react-router-dom";
+import {saveLogs} from "../utils/logs";
+
 
 const AddRoom = () => {
   const navigate = useNavigate();
@@ -67,6 +69,7 @@ const AddRoom = () => {
         console.log("After Axios request 2");
         console.log("Manager room response:", res.data);
       }catch (error) {
+        saveLogs(error.message, "/add-room", "Manager");
         console.error("Error in Axios request 2:", error);
       if (error.response) {
         console.error("Response data 2:", error.response.data);
@@ -352,11 +355,13 @@ const AddRoom = () => {
         Exciting
       </label>
     </div>
-        <div className = 'vertical-gap'></div>
-         <div className="flex items-center border px-3 py-2 rounded-full gap-2 bg-[#ff5a60] text-white font-bold shadow-lg shadow-gray-300 hover:bg-[#f9787c] duration-100 ease-out"
-          >
-          <button type="submit">Submit</button>
-        </div>
+    <div className='vertical-gap'></div>
+<div className="flex items-center justify-center">
+  <div className="border px-3 py-2 rounded-full bg-[#ff5a60] text-white font-bold shadow-lg shadow-gray-300 hover:bg-[#f9787c] duration-100 ease-out">
+    <button type="submit">Submit</button>
+  </div>
+</div>
+
       </form>
     </div>
   );

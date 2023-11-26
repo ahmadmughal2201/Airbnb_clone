@@ -16,7 +16,15 @@ app.get("/get-rooms", roomController.getRooms);
 
 app.get("/get-roomImage/:id", roomController.getPhoto);
 
-app.get("/get-single-room/:id" , roomController.singleRoom);
+app.get("/get-single-room/:id" , roomController.getSingle);
+
+app.get("/get-single-room-manager/:id" , roomController.getSingle);
+
+app.put("/update-room/:id", roomController.updateRoom);
+
+app.delete("/delete-room/:id", roomController.deleteRoom);
+
+
 
 
 module.exports = app;

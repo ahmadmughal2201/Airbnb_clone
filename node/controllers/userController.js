@@ -1,5 +1,7 @@
 const user = require('../models/userModel');
 const jwt = require('jsonwebtoken');
+const saveLogs = require("./backendLogController");
+
 
 const multer = require('multer');
 const roomModel = require('../models/roomModel');
@@ -103,6 +105,7 @@ async function signUp(req, res) {
             role: newUser.role,
         });
     } catch (error) {
+      saveLogs(error.message, "/signUp", "post");
         res.status(500).json({ apierror: error });
     }
 }
@@ -126,6 +129,7 @@ async function logIn(req, res) {
          
 
     } catch (error) {
+      saveLogs(error.message, "/logIn", "post");
         res.status(500).json({ message: error.message });
     }
 };

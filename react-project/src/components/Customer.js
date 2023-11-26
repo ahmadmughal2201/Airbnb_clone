@@ -9,13 +9,13 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import { useMyContext } from './MyContext';
-
+import {saveLogs} from "../utils/logs";
 
 const Customer = ({collection}) => {
   // Navigate to the data entry page when the button is clicked
   const navigate = useNavigate();
 
-  const {money, setMoney} = useMyContext();
+  const {money, setMoney, roomId, setRoomId} = useMyContext();
 
 
   const handleClick = () => {
@@ -35,6 +35,7 @@ const Customer = ({collection}) => {
       const { data } = await axios.get("http://localhost:3000/api/get-rooms");
       setRooms(data.rooms);
     } catch (error) {
+      saveLogs(error.message, "/customer", "Customer");
       console.error("Error in Axios request:", error);
     if (error.response) {
       console.error("Response data:", error.response.data);

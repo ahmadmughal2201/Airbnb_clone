@@ -2,7 +2,10 @@ const roomModel = require('../models/roomModel');
 const fs = require("fs");
 const slugify = require("slugify"); 
 const util = require('util');
+const formidable = require("express-formidable");
 const readFileAsync = util.promisify(fs.readFile);
+const roomAudit = require('./roomAuditController');
+const saveLogs = require("./backendLogController");
 
 async function getImage(req, res){
     try {
@@ -10,6 +13,7 @@ async function getImage(req, res){
         res.send({ status: "ok", data: data });
       });
     } catch (error) {
+      saveLogs(error.message, "/get-image", "Get");
       res.json({ status: error });
     }
 }
@@ -71,6 +75,8 @@ async function upload(req, res) {
     // Save the new room to the database
     await newRoom.save();
 
+    roomAudit(newRoom._id,"Insert","-",newRoom);
+
     console.log("executed");
     return res.status(200).json({
       message: 'Added room successfully',
@@ -79,14 +85,16 @@ async function upload(req, res) {
   });
   } catch (error) {
     console.error(error);
+    saveLogs(error.message, "/add-Room", "POST");
     return res.status(500).json({ apierror: error.message });
   }
 }
 
 async function singleRoom(req, res){
+  console.log("Room Id to find is: ", req.params.id)
     try {
       const newRoom = await roomModel
-        .findOne({ id: req.params._id })
+        .findById(req.params.id)
         .select("-photo");
       res.status(200).send({
         success: true,
@@ -95,6 +103,7 @@ async function singleRoom(req, res){
       });
     } catch (error) {
       console.log(error);
+      saveLogs(error.message, "/get-single-room/:id", "Get");
       res.status(500).send({
         success: false,
         message: "Eror while getitng single room",
@@ -102,6 +111,36 @@ async function singleRoom(req, res){
       });
     }
   };
+   async function getSingle(req, res){
+    const roomId = req.params.id;
+    console.log("Room needed: ", roomId);
+  
+    try {
+      const foundRoom = await roomModel.findById(roomId).select('-photo');
+  
+      if (!foundRoom) {
+        return res.status(404).json({
+          success: false,
+          message: 'Room not found',
+        });
+      }
+  
+      res.status(200).json({
+        success: true,
+        message: 'Single Room Fetched',
+        newRoom: foundRoom,
+      });
+    } catch (error) {
+      console.log(error);
+      saveLogs(error.message, "/get-single-room/:id", "Get");
+      res.status(500).json({
+        success: false,
+        message: 'Error while getting single room',
+        error: error.message,
+      });
+    }
+  };
+
   
 
 async function getRooms(req,res){
@@ -110,7 +149,7 @@ async function getRooms(req,res){
       .find({})
       .populate("type")
       .select("-img")
-      .limit(12)
+      .limit(50)
       .sort({ createdAt: -1 });
     res.status(200).send({
       success: true,
@@ -120,6 +159,7 @@ async function getRooms(req,res){
     });
   } catch (error) {
     console.log(error);
+    saveLogs(error.message, "/get-rooms", "Get");
     res.status(500).send({
       success: false,
       message: "Erorr in getting rooms",
@@ -137,6 +177,7 @@ async function getPhoto(req, res){
     }
   } catch (error) {
     console.log(error);
+    saveLogs(error.message, "/get-roomImage/:id", "Get");
     res.status(500).send({
       success: false,
       message: "Erorr while getting photo",
@@ -208,12 +249,98 @@ async function addRoom (req, res){
       // Save the new room to the database
       await newRoom.save();
 
+      roomAudit(newRoom._id,"Insert","-",newRoom);
+
       res.status(201).json(newRoom);
     } catch (error) {
       res.status(500).json({ apierror: error.message });
     }
   });
 }
+
+async function deleteRoom(req, res){
+  const roomId = req.params.id;
+  console.log("The api rrom Id: ", roomId);
+  try {
+    // Find the room by ID
+    const roomToDelete = await roomModel.findById(roomId).select();
+
+    console.log("Room to Delete: ", roomToDelete);
+
+    if (!roomToDelete) {
+      return res.status(404).json({ apierror: 'Room not found' });
+    }
+
+    // Delete the room from the database
+    await roomModel.deleteOne({ _id: roomId });
+
+    roomAudit(roomId,"Delete", roomToDelete[0], "-");
+
+    res.status(200).json({ message: 'Room deleted successfully' });
+  } catch (error) {
+    saveLogs(error.message, "/delete-room/:id", "Delete");
+    res.status(500).json({ apierror: error.message });
+  }
+}
+
+async function updateRoom(req, res) {
+  const roomId = req.params.id;
+
+  try {
+    // Find the room by ID
+    const existingRoom = await roomModel.findById(roomId);
+    const oldRoom = await roomModel.findById(roomId);
+    if (!existingRoom) {
+      return res.status(404).json({ apierror: 'Room not found' });
+    }
+    const {
+      city,
+      country,
+      rent,
+      location,
+      des,
+      type,
+      history,
+      rating,
+      trending,
+      sleep,
+      views,
+      luxury,
+      farm,
+      mountain,
+      exciting,
+      tropical,
+    } = req.body;
+
+    // Update the room fields
+    existingRoom.city = city || existingRoom.city;
+    existingRoom.country = country || existingRoom.country;
+    existingRoom.rent = rent || existingRoom.rent;
+    existingRoom.location = location || existingRoom.location;
+    existingRoom.des = des || existingRoom.des;
+    existingRoom.type = type || existingRoom.type;
+    existingRoom.history = history || existingRoom.history;
+    existingRoom.rating = rating || existingRoom.rating;
+    existingRoom.trending = trending || existingRoom.trending;
+    existingRoom.sleep = sleep || existingRoom.sleep;
+    existingRoom.views = views || existingRoom.views;
+    existingRoom.luxury = luxury || existingRoom.luxury;
+    existingRoom.farm = farm || existingRoom.farm;
+    existingRoom.mountain = mountain || existingRoom.mountain;
+    existingRoom.exciting = exciting || existingRoom.exciting;
+    existingRoom.tropical = tropical || existingRoom.tropical;
+
+    // Save the updated room to the database
+    await existingRoom.save();
+
+    roomAudit(roomId, "Update", oldRoom, existingRoom);
+
+    res.status(200).json(existingRoom);
+  } catch (error) {
+    res.status(500).json({ apierror: error.message });
+  }
+}
+
 
 async function searchRoom(req, res){
   try {
@@ -244,5 +371,8 @@ module.exports = {
     getRooms,
     singleRoom,
     searchRoom,
-    getPhoto
+    getPhoto,
+    getSingle,
+    updateRoom,
+    deleteRoom
 }

@@ -8,6 +8,8 @@ import './Manager.css';
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import {saveLogs} from "../utils/logs";
+
 
 const Manager = ({collection}) => {
   // Navigate to the data entry page when the button is clicked
@@ -26,6 +28,7 @@ const Manager = ({collection}) => {
       const { data } = await axios.get("http://localhost:3000/api/get-rooms");
       setRooms(data.rooms);
     } catch (error) {
+      saveLogs(error.message, "/manager", "Manager");
       console.error("Error in Axios request:", error);
     if (error.response) {
       console.error("Response data:", error.response.data);
@@ -52,7 +55,7 @@ const Manager = ({collection}) => {
             {rooms?.map((p) => (
               <Link
                 key={p._id}
-                to={`http://localhost:3000/api/get-single-room/${p._id}`}
+                to={`http://localhost:3000/api/get-single-room-manager/${p._id}`}
                 className="product-link"
               >
                 <div className="card m-2" style={{ width: "18rem" ,height:"22rem"}}>

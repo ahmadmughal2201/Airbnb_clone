@@ -11,6 +11,9 @@ import Wallet from './components/Wallet';
 import Customer from './components/Customer';
 import RoomInfo from './components/RoomInfo';
 import Rating from './components/Rating';
+import Review from './components/Review';
+import ReadReview from './components/ReadReviews';
+import ManagerRoomInfo from './components/ManagerRoomInfo';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function AppContent() {
@@ -40,7 +43,10 @@ function AppContent() {
           <Route path= "/customer" element={<Customer/>} />
           <Route path= "/wallet" element={<Wallet/>} />
           <Route path= "/rating" element={<Rating/>} />
+          <Route path= "/review" element={<Review/>} />
           <Route path="/api/get-single-room/:id" element={<RoomInfo/>} />
+          <Route path="/readReviews" element={<ReadReview/>} />
+          <Route path="/api/get-single-room-manager/:id" element={<ManagerRoomInfo/>} />
         </Routes>
 
         {/* Filters */}

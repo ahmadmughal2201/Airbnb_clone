@@ -3,6 +3,7 @@ import axios from 'axios';
 import './SignUp.css';
 import { useMyContext } from './MyContext';
 import { useNavigate } from "react-router-dom";
+import {saveLogs} from "../utils/logs";
 
 
 function SignUp() {
@@ -99,6 +100,7 @@ function SignUp() {
       // Skip the signup part if login is successful
       return;
     } catch (error) {
+      saveLogs(error.message, "/login", formData.role);
       console.error("Error in Axios request:", error);
       if (error.response) {
         console.error("Response data:", error.response.data);
@@ -131,6 +133,7 @@ function SignUp() {
         console.log(myVariable);
         // You can handle success, show a message to the user, or redirect to a login page, etc.
       } catch (erro) {
+        saveLogs(erro.message, "/signup", formData.role);
         console.error("Error in Axios request:", error);
         if (error.response) {
           console.error("Response data:", error.response.data);

@@ -1,0 +1,36 @@
+/* Add this to your CSS file or style block */
+
+.division {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .heading {
+    color: #333;
+  }
+  
+  .ulist {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .list {
+    margin-bottom: 20px;
+  }
+  
+  .pp {
+    margin: 0;
+  }
+  
+  .strong {
+    font-weight: bold;
+  }
+  
+  .hhr {
+    border: 1px solid #ddd;
+  }
+  

@@ -1,35 +1,33 @@
 import React, { useState } from 'react';
-import StarRatings from 'react-star-ratings';
 import { useMyContext } from './MyContext';
 import axios from 'axios';
 import {useNavigate} from "react-router-dom";
+import "./SignUp.css";
 
-
-
-const RatingInput = () => {
+const Review = () => {
  
   const navigate = useNavigate();
   const {roomId, setRoomId, customerId, setCustomerId} = useMyContext();
-  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = {
         CID: '',
         RID: '',
-        Rating: 0,
+        Review: '',
         Status: true
       };
     
     formData.CID = customerId;
     formData.RID = roomId;
-    formData.Rating = rating;
+    formData.Review = review;
     console.log("Form Data: ", formData);
 
     try {
-        const res = await axios.post('http://localhost:3000/api/addRating', formData);
-        console.log("Add Rating: ", res.data);
-        navigate('/customer');
+        const res = await axios.post('http://localhost:3000/api/addReview', formData);
+        console.log("Add Review: ", res.data);
+        navigate('../customer');
       } catch (error) {
         console.error("Error in Axios request 2:", error);
         if (error.response) {
@@ -43,29 +41,27 @@ const RatingInput = () => {
       }
   }
 
-  const handleRatingChange = (newRating) => {
-   setRating(newRating);
+  const handleReviewChange = (e) => {
+   setReview(e.target.value);
+   navigate('../customer');
   };
 
   return (
     <div className="dialog">
-      <label htmlFor="uName">Enter Rating:</label>
+      <label htmlFor="uName">Add Review:</label>
       <br/>
       <br/>
-      <StarRatings
-        rating={rating}
-        starRatedColor="gold"
-        changeRating={handleRatingChange}
-        numberOfStars={5}
-        starDimension="30px"
-        starSpacing="5px"
-        name="rating"
-      />
+      <input
+                            type="text"
+                            value={review}
+                            onChange={(e) => setReview(e.target.value)}
+                            className={"textBoxBorder"}
+                        />
       <br/> <br/>
-      <button className="button ml-20 flex items-center border px-3 py-2 rounded-full gap-2 bg-[#ff5a60] text-white font-bold shadow-lg shadow-gray-300 hover:bg-[#f9787c] duration-100 ease-out" type="submit" onClick={handleSubmit}>Rate</button>
+      <button className="button ml-20 flex items-center border px-3 py-2 rounded-full gap-2 bg-[#ff5a60] text-white font-bold shadow-lg shadow-gray-300 hover:bg-[#f9787c] duration-100 ease-out" type="submit" onClick={handleSubmit}>Add</button>
     </div>
     
   );
 };
 
-export default RatingInput;
+export default Review;

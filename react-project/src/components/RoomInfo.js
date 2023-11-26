@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Layout from "./Layout";
+import { FaStar } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useMyContext } from './MyContext';
 import { BiSolidAddToQueue } from 'react-icons/bi';
 import axios from "axios";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { MdOutlineReviews } from "react-icons/md";
+import {saveLogs} from "../utils/logs";
 
 const RoomInfo = () => {
   const navigate = useNavigate();
@@ -36,7 +39,7 @@ const RoomInfo = () => {
 
   //get single product
   const getSingleProduct = async () => {
-    
+    console.log("The where id needed: ", params.id);
     try {
       const { data } = await axios.get(
         `http://localhost:3000/api/get-single-room/${params.id}`
@@ -51,6 +54,7 @@ const RoomInfo = () => {
         setShipping(data.product.shipping);
         setCategory(data.product.category._id);*/
         setCity(data.newRoom.city);
+        console.log("City Neededd: ", data.newRoom.city);
         setCountry(data.newRoom.country);
         setDes(data.newRoom.des);
         setRating(data.newRoom.rating);
@@ -59,15 +63,26 @@ const RoomInfo = () => {
         setType(data.newRoom.type);
         setId(params.id);
         setRoomId(params.id);
+        console.log("Params ki room Id", roomId);
 
     } catch (error) {
       console.log(error);
+      saveLogs(error.message, "/RoomInfo", "Customer");
     }
   };
 
+  
   const handleClick = async(e) => {
     e.preventDefault();
     navigate('/rating');
+  }
+  const handleClick2 = async(e) => {
+    e.preventDefault();
+    navigate('/review');
+  }
+  const handleClick3 = async(e) => {
+    e.preventDefault();
+    navigate('/readReviews');
   }
 
   const handleSubmit = async (e) => {
@@ -201,6 +216,35 @@ const RoomInfo = () => {
     console.log("Date ",e.target.value);
   };
   return (
+    <div>
+    <div
+      style={{
+        position: 'fixed',
+        top: '120px',
+        right: '30px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '90px',
+        height: '35px',
+        backgroundColor: '#ff5a60',
+        color: 'white',
+        boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)',
+        cursor: 'pointer',
+        transition: 'background-color 0.1s ease-out',
+      }} onClick={handleClick3}
+    >
+      <div
+        style={{
+          fontSize: '35px',
+          color: 'white',
+          transition: 'color 0.1s',
+        }}
+      >
+        <h6>Reviews</h6>
+      </div>
+    </div> 
+    
     <div
       style={{
         display: 'flex',
@@ -261,7 +305,7 @@ const RoomInfo = () => {
       <div
       style={{
         position: 'fixed',
-        bottom: '30px',
+        bottom: '100px',
         right: '30px',
         display: 'flex',
         alignItems: 'center',
@@ -283,10 +327,40 @@ const RoomInfo = () => {
           transition: 'color 0.1s',
         }}
       >
-        <BiSolidAddToQueue />
+        <FaStar />
       </div>
     </div> 
+    <div
+      style={{
+        position: 'fixed',
+        bottom: '30px',
+        right: '30px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '60px',
+        height: '60px',
+        backgroundColor: '#ff5a60',
+        color: 'white',
+        borderRadius: '50%',
+        boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)',
+        cursor: 'pointer',
+        transition: 'background-color 0.1s ease-out',
+      }} onClick={handleClick2}
+    >
+      <div
+        style={{
+          fontSize: '35px',
+          color: 'white',
+          transition: 'color 0.1s',
+          
+        }}
+      >
+        <MdOutlineReviews />
       </div>
+    </div>
+      </div>
+    </div>
     </div>
   );  
 };
