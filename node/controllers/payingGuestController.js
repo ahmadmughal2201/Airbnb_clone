@@ -12,6 +12,19 @@ async function addGuest (req, res){
     }
 }
 
+async function middleFunction(req, res){
+  const customerId = req.params.customerId;
+  const updatedData = req.body; // Assuming the updated data is sent in the request body
+
+  try {
+    const updatedPayingGuest = await updatePayingGuest(customerId, updatedData);
+    res.status(200).json(updatedPayingGuest);
+  } catch (error) {
+    console.error('Error in route handler:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 
 async function updatePayingGuest(customerId, updatedData) {
   try {
@@ -62,5 +75,6 @@ async function check (req, res) {
 module.exports = {
     addGuest,
     updatePayingGuest,
-    check
+    check,
+    middleFunction
 }
