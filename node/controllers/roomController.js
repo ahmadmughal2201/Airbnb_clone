@@ -141,7 +141,36 @@ async function singleRoom(req, res){
     }
   };
 
+  async function getRoomByType (req, res) {
+    try {
+      const type = req.params.type;
   
+      // Validate the type parameter if needed
+  
+      const rooms = await roomModel
+        .find({ type: type })
+        .populate("type")
+        .select("-img")
+        .limit(50)
+        .sort({ createdAt: -1 });
+  
+      res.status(200).send({
+        success: true,
+        countTotal: rooms.length,
+        message: `Rooms of type ${type}`,
+        rooms,
+      });
+    } catch (error) {
+      console.log(error);
+      // Assuming you have a saveLogs function for error logging
+      // saveLogs(error.message, "/get-rooms-by-type", "Get");
+      res.status(500).send({
+        success: false,
+        message: "Error in getting rooms by type",
+        error: error.message,
+      });
+    }
+  };
 
 async function getRooms(req,res){
   try {
@@ -374,5 +403,6 @@ module.exports = {
     getPhoto,
     getSingle,
     updateRoom,
-    deleteRoom
+    deleteRoom,
+    getRoomByType
 }

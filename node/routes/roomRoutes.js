@@ -14,6 +14,8 @@ app.post("/upload-image", formidable(), roomController.upload);
 
 app.get("/get-rooms", roomController.getRooms);
 
+app.get("/get-room-type/:type", roomController.getRoomByType);
+
 app.get("/get-roomImage/:id", roomController.getPhoto);
 
 app.get("/get-single-room/:id" , roomController.getSingle);

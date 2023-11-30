@@ -9,10 +9,12 @@ const MyProvider = ({ children }) => {
   const [customerId, setCustomerId] = useState(null);
   const [roomId, setRoomId] = useState(null);
   const [money, setMoney] = useState(null);
+  const [type, setType] = useState(null);
+
 
 
   return (
-    <MyContext.Provider value={{ money, setMoney, myVariable, setMyVariable, managerId, setManagerId, roomId, setRoomId , customerId, setCustomerId}}>
+    <MyContext.Provider value={{ money, setMoney,type, setType, myVariable, setMyVariable, managerId, setManagerId, roomId, setRoomId , customerId, setCustomerId}}>
       {children}
     </MyContext.Provider>
   );
